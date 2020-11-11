@@ -1,0 +1,47 @@
+load_file("nrngui.hoc")
+load_file("celltemplate.hoc")
+
+objref Cell
+Cell = new celltemplate()
+
+objref ccl
+Cell.soma ccl = new IClamp(.5)
+ccl.del = 100 //ms delay
+ccl.dur = 200 //ms duration
+ccl.amp = 0.1 //nA amplitude
+
+objref syn1, syn2
+Cell.soma syn1 = new Exp2Syn(.5)
+syn1.tau1 = 0.5 //ms rise time constant
+syn1.tau2 = 3 //ms decay time constant
+syn1.e = 50 //mV reversal potential
+Cell.soma syn2 = new Exp2Syn(.5)
+syn2.tau1 = 10
+syn2.tau2 = 20
+syn2.e = -80
+
+objref source1, source2
+source1 = new NetStim()
+source1.interval=5 //ms (mean) time between spikes
+source1.number=40 //(average) number of spikes
+source1.start=400 //ms (most likely) start time of first spike
+source1.noise=0.8 //range 0 to 1. Fractional randomness.
+source2 = new NetStim()
+source2.interval=20
+source2.number=10
+source2.start=700
+source2.noise=0.8
+
+gmax_exc = 0.0004 //uS excitatory synapse conductance
+gmax_inh = 0.0004 //uS inhibitory synapse conductance
+objref nc1,nc2
+nc1 = new NetCon(source1,syn1,0,0,gmax_exc) //(source,target,threshold,delay,weight)
+nc2 = new NetCon(source2,syn2,0,0,gmax_inh)
+
+tstop = 1000
+newPlot(0,tstop,-80,40)
+graphItem.save_name("graphList")
+graphList.append(graphItem)
+graphItem.addexpr("Cell.soma.v(.5)")
+nrncontrolmenu()
+run()

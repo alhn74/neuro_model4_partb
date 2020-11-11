@@ -1,0 +1,18 @@
+begintemplate celltemplate
+
+public soma // declares object soma is a public object that can be accessed by any procedures/functions
+create soma // declares soma as a membrane compartment object
+
+proc init() {
+	create soma // create soma in the initialization
+	soma {
+		nseg = 1 //number of segments
+		diam = 18.8 //um diameter
+		L = 18.8 //um length
+		Ra = 123.0 //Ohm*cm cytoplasmic resistivity
+		cm = 2 //uF/cm2 membrane capacitance
+
+		insert hh
+	} 
+}
+endtemplate celltemplate
